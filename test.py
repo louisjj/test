@@ -9,13 +9,12 @@ class Test(unittest.TestCase):
 		self.app.testing = True
 
   	def test_test(self):
-	    self.assertEquals(2, 2)
 	    result = self.app.get('/test')
 	    self.assertEquals(result.status_code, 200)
 	    json_obj = json.loads(result.data)
 	    self.assertEquals(json_obj['message'], "hello")
 
-        def test_register(self):
+    def test_register(self):
 		raw_body = {}
 		result = self.app.post('/register',data=json.dumps(raw_body), content_type='application/json')
 		self.assertEquals(result.status_code, 200)
@@ -46,9 +45,28 @@ class Test(unittest.TestCase):
 		#check user is created in db
 		user = User.get(User.username == 'test')
 		self.assertEquals(user.username, 'test')
-		#check password is hashed
+		#check password is not plain text password
 		self.assertNotEquals(user.password, '1234')
 		self.assertEquals(user.email, 'test@test.test')
+
+	def test_auth():
+		raw_body = {}
+		result = self.app.post('/register',data=json.dumps(raw_body), content_type='application/json')
+		self.assertEquals(result.status_code, 200)
+		json_obj = json.loads(result.data)
+		self.assertEquals(json_obj['success'], False)
+
+		raw_body['username'] = 'test'
+		raw_body['password'] = 'wrong_password'
+		self.assertEquals(result.status_code, 200)
+		json_obj = json.loads(result.data)
+		self.assertEquals(json_obj['success'], False)
+
+		raw_body['password'] = '1234'
+		self.assertEquals(result.status_code, 200)
+		json_obj = json.loads(result.data)
+		self.assertEquals(json_obj['success'], True)
+
 		
 if __name__ == '__main__':
   unittest.main()
