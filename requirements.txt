@@ -1,1 +1,6 @@
 Flask
+peewee
+bcrypt
+nose
+PyJWT
+PyMySQL
