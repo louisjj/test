@@ -39,6 +39,5 @@ class Test(unittest.TestCase):
 		user = User.get(User.username == 'test')
 		self.assertEquals(user.username, 'test')
 		
-	
 if __name__ == '__main__':
   unittest.main()
