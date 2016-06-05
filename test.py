@@ -13,7 +13,7 @@ class Test(unittest.TestCase):
 	    result = self.app.get('/test')
 	    self.assertEquals(result.status_code, 200)
 	    json_obj = json.loads(result.data)
-        self.assertEquals(json_obj['message'], "hello")
+		self.assertEquals(json_obj['message'], "hello")
 
     def test_register(self):
 		raw_body = {}
