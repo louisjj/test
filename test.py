@@ -29,15 +29,26 @@ class Test(unittest.TestCase):
 		json_obj = json.loads(result.data)
 		self.assertEquals(json_obj['success'], False)
 		
-		#create user
+		#missing email
 		raw_body['password'] = '1234'
 		result = self.app.post('/register',data=json.dumps(raw_body), content_type='application/json')
 		self.assertEquals(result.status_code, 200)
 		json_obj = json.loads(result.data)
+		self.assertEquals(json_obj['success'], False)
+
+		#create user
+		raw_body['email'] = 'test@test.test'
+		result = self.app.post('/register',data=json.dumps(raw_body), content_type='application/json')
+		self.assertEquals(result.status_code, 200)
+		json_obj = json.loads(result.data)
 		self.assertEquals(json_obj['success'], True)
+
 		#check user is created in db
 		user = User.get(User.username == 'test')
 		self.assertEquals(user.username, 'test')
+		#check password is hashed
+		self.assertNotEquals(user.password, '1234')
+		self.assertEquals(user.email == 'test@test.test')
 		
 if __name__ == '__main__':
   unittest.main()
