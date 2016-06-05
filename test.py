@@ -58,13 +58,13 @@ class Test(unittest.TestCase):
 
 		raw_body['username'] = 'test'
 		raw_body['password'] = 'wrong_password'
-        result = self.app.post('/register',data=json.dumps(raw_body), content_type='application/json')
+                result = self.app.post('/register',data=json.dumps(raw_body), content_type='application/json')
 		self.assertEquals(result.status_code, 200)
 		json_obj = json.loads(result.data)
 		self.assertEquals(json_obj['success'], False)
 
 		raw_body['password'] = '1234'
-        result = self.app.post('/register',data=json.dumps(raw_body), content_type='application/json')
+                result = self.app.post('/register',data=json.dumps(raw_body), content_type='application/json')
 		self.assertEquals(result.status_code, 200)
 		json_obj = json.loads(result.data)
 		self.assertEquals(json_obj['success'], True)
