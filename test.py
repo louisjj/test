@@ -13,9 +13,9 @@ class Test(unittest.TestCase):
 	    result = self.app.get('/test')
 	    self.assertEquals(result.status_code, 200)
 	    json_obj = json.loads(result.data)
-		self.assertEquals(json_obj['message'], "hello")
+	    self.assertEquals(json_obj['message'], "hello")
 
-    def test_register(self):
+        def test_register(self):
 		raw_body = {}
 		result = self.app.post('/register',data=json.dumps(raw_body), content_type='application/json')
 		self.assertEquals(result.status_code, 200)
