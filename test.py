@@ -48,7 +48,7 @@ class Test(unittest.TestCase):
 		self.assertEquals(user.username, 'test')
 		#check password is hashed
 		self.assertNotEquals(user.password, '1234')
-		self.assertEquals(user.email == 'test@test.test')
+		self.assertEquals(user.email, 'test@test.test')
 		
 if __name__ == '__main__':
   unittest.main()
