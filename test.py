@@ -50,6 +50,8 @@ class Test(unittest.TestCase):
 		self.assertEquals(user.email, 'test@test.test')
 
 	def test_auth(self):
+        user = User.get(User.username == 'test')
+        self.assertEquals(user.username, 'test')
 		raw_body = {}
 		result = self.app.post('/register',data=json.dumps(raw_body), content_type='application/json')
 		self.assertEquals(result.status_code, 200)
