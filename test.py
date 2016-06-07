@@ -8,6 +8,9 @@ class Test(unittest.TestCase):
 		self.app = app.test_client()
 		self.app.testing = True
 
+	def tearDown(self):
+		db.execute_sql("Delete from user")
+		db.execute_sql("Delete from activity")
 	def test_test(self):
 		result = self.app.get('/test')
 		self.assertEquals(result.status_code, 200)
@@ -15,6 +18,7 @@ class Test(unittest.TestCase):
 		self.assertEquals(json_obj['message'], "hello")
 
 	def test_register(self):
+		longMessage = True
 		raw_body = {}
 		result = self.app.post('/register',data=json.dumps(raw_body), content_type='application/json')
 		self.assertEquals(result.status_code, 200)
@@ -49,25 +53,24 @@ class Test(unittest.TestCase):
 		self.assertNotEquals(user.password, '1234')
 		self.assertEquals(user.email, 'test@test.test')
 
+		#TEST AUTH
 		raw_body = {}
-		result = self.app.post('/register',data=json.dumps(raw_body), content_type='application/json')
+		result = self.app.post('/auth',data=json.dumps(raw_body), content_type='application/json')
 		self.assertEquals(result.status_code, 200)
 		json_obj = json.loads(result.data)
 		self.assertEquals(json_obj['success'], False)
 
 		raw_body['username'] = 'test'
-		raw_body['password'] = 'wrong_password'
-                result = self.app.post('/register',data=json.dumps(raw_body), content_type='application/json')
+		result = self.app.post('/auth',data=json.dumps(raw_body), content_type='application/json')
 		self.assertEquals(result.status_code, 200)
 		json_obj = json.loads(result.data)
 		self.assertEquals(json_obj['success'], False)
 
 		raw_body['password'] = '1234'
-                result = self.app.post('/register',data=json.dumps(raw_body), content_type='application/json')
+		result = self.app.post('/auth',data=json.dumps(raw_body), content_type='application/json')
 		self.assertEquals(result.status_code, 200)
 		json_obj = json.loads(result.data)
 		self.assertEquals(json_obj['success'], True)
 
-		
 if __name__ == '__main__':
   unittest.main()
