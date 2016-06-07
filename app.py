@@ -111,8 +111,7 @@ def add_exercise():
                 try:
                     synchro_id = exo["id"]
                 except KeyError:
-                    synchro_id = ''
-		    succes = 0
+		    success = 0
                 try:
                     distance = exo["distance"]
                 except KeyError:
