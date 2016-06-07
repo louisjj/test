@@ -82,9 +82,9 @@ def auth():
             user.save()
             return jsonify(success=True, token=token)
         else:
-            return error_response("Access denied")
+            return error_response("Access denied credential")
     except:
-        return error_response("Access denied")
+        return error_response("Access denied no user")
 
 #ajouter un exercice 
 @app.route('/exercises', methods=['POST'])
@@ -98,49 +98,61 @@ def add_exercise():
         return error_response("Access denied")
     
     try:
-        json_data = request.get_json()
-        try:
-            synchro_id = json_data["id"]
-        except KeyError:
-            return error_response("Id is missing")
-        try:
-            distance = json_data["distance"]
-        except KeyError:
-            distance = 0
-        try:
-            duration = json_data["duration"]
-        except KeyError:
-            duration = 0
-        try:
-            max_speed = json_data["max_speed"]
-        except KeyError:
-            max_speed = 0
-        try:
-            avg_speed = json_data["avg_speed"]
-        except KeyError:
-            avg_speed = 0
-        try:
-            weather = json_data["weather"]
-        except KeyError:
-            weather = 0
-    except TypeError:
-        return error_response("Request must be json")
-    
-    try:
         user = User.get(User.username == decoded_token["username"])
     except:
         return error_response("Acess denied")
-    exercise = Activity.create(
-            synchro_id=synchro_id,
-            user=user,
-            distance=distance,
-            duration=duration,
-            max_speed=max_speed,
-            avg_speed=avg_speed,
-            weather=weather
-            )
-    exercise.save()
-    return jsonify(success=True, message="Exercise created")
+
+    try:
+        json_data = request.get_json()
+        try:
+            json_exercises = json_data['exercises']
+            for exo in json_exercises:
+                success = 1
+                try:
+                    synchro_id = exo["id"]
+                except KeyError:
+                    succes = 0
+                try:
+                    distance = exo["distance"]
+                except KeyError:
+                    distance = 0
+                try:
+                    duration = exo["duration"]
+                except KeyError:
+                    duration = 0
+                try:
+                    max_speed = exo["max_speed"]
+                except KeyError:
+                    max_speed = 0
+                try:
+                    avg_speed = exo["avg_speed"]
+                except KeyError:
+                    avg_speed = 0
+                try:
+                    weather = exo["weather"]
+                except KeyError:
+                    weather = 'cloudy'
+
+        
+                if success == 1:
+                    exercise = Activity.create(
+                        synchro_id=synchro_id,
+                        user=user,
+                        distance=distance,
+                        duration=duration,
+                        max_speed=max_speed,
+                        avg_speed=avg_speed,
+                        weather=weather
+                    )
+                    exercise.save()
+
+
+        except KeyError:
+            return error_response("Send an array of exercises")
+    except TypeError:
+        return error_response("Request must be json")
+    
+    return jsonify(success=True, message="Exercises created")
 
 @app.route('/exercises', methods=['GET'])
 def get_exercises():
